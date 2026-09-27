@@ -7,3 +7,8 @@ iso/
 *.o
 *.bin
 *.iso
+
+# other files/folders
+
+grub.cfg
+res/
