@@ -24,7 +24,7 @@ ubuntu/debian-based linux distro is recommended, but wsl on windows works fine t
 ## building & running
 
 ```bash
-git clone https://github.com/yourname/wee64.git
+git clone https://github.com/luuggelis/wee64.git
 cd wee64
 make
 qemu-system-x86_64 -cdrom wee64.iso
