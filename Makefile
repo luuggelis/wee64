@@ -13,8 +13,14 @@ boot.o: boot/boot.asm
 kernel.o: kernel/kernel.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-kernel.bin: boot.o kernel.o linker.ld
-	$(LD) $(LDFLAGS) boot.o kernel.o -o $@
+interrupts.o: kernel/interrupts.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+interrupts_asm.o: kernel/interrupts.asm
+	$(AS) -f elf64 $< -o $@
+
+kernel.bin: boot.o kernel.o interrupts.o interrupts_asm.o linker.ld
+	$(LD) $(LDFLAGS) boot.o kernel.o interrupts.o interrupts_asm.o -o $@
 
 wee64.iso: kernel.bin
 	mkdir -p iso/boot/grub

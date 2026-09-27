@@ -1,5 +1,9 @@
+#include <stdint.h>
+
 #define VGA_WIDTH 80
 #define VGA_HEIGHT 25
+
+extern void idt_init(void);
 
 static volatile unsigned char *video = (volatile unsigned char *)0xB8000;
 
@@ -29,4 +33,11 @@ void kernel_main(void)
     print("WEE64 0.1.0\n");
     print("Welcome to wee64!\n");
     print("64bit kernel online.\n");
+
+    idt_init();
+
+    while (1)
+    {
+        __asm__ volatile ("hlt");
+    }
 }
