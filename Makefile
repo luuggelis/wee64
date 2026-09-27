@@ -17,8 +17,9 @@ kernel.bin: boot.o kernel.o linker.ld
 	$(LD) $(LDFLAGS) boot.o kernel.o -o $@
 
 wee64.iso: kernel.bin
-	mkdir -p iso/boot
+	mkdir -p iso/boot/grub
 	cp kernel.bin iso/boot/kernel.bin
+	cp boot/grub.cfg iso/boot/grub/grub.cfg
 	grub-mkrescue -o wee64.iso iso
 
 clean:
