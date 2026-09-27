@@ -1,4 +1,8 @@
+# build folders
+
 iso/
+
+# build files
 
 *.o
 *.bin
