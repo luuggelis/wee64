@@ -2,13 +2,13 @@ AS = nasm
 CC = gcc
 LD = ld
 
-CFLAGS = -m32 -ffreestanding -fno-pie -fno-stack-protector
-LDFLAGS = -m elf_i386 -T linker.ld
+CFLAGS = -m64 -ffreestanding -fno-pie -fno-stack-protector -mno-red-zone
+LDFLAGS = -m elf_x86_64 -T linker.ld
 
 all: wee64.iso
 
 boot.o: boot/boot.asm
-	$(AS) -f elf32 $< -o $@
+	$(AS) -f elf64 $< -o $@
 
 kernel.o: kernel/kernel.c
 	$(CC) $(CFLAGS) -c $< -o $@
