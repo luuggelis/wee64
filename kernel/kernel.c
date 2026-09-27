@@ -36,6 +36,10 @@ void kernel_main(void)
 
     idt_init();
 
+    print("wee64> ");
+
+    __asm__ volatile ("sti");
+
     while (1)
     {
         __asm__ volatile ("hlt");

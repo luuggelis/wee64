@@ -5,8 +5,6 @@ global keyboard_interrupt
 extern keyboard_handler
 
 keyboard_interrupt:
-    mov byte [0xB8000], 'K'
-    mov byte [0xB8001], 0x07
 
     push rax
     push rbx
