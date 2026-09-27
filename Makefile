@@ -13,7 +13,7 @@ boot.o: boot/boot.asm
 kernel.o: kernel/kernel.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-interrupts.o: kernel/interrupts.c
+interrupts.o: kernel/interrupts.c kernel/io.h
 	$(CC) $(CFLAGS) -c $< -o $@
 
 interrupts_asm.o: kernel/interrupts.asm

@@ -73,6 +73,8 @@ void idt_init(void)
 
     idt_set_gate(33, keyboard_interrupt);
 
+    pic_remap();
+
     __asm__ volatile ("lidt %0" : : "m"(idt_descriptor));
 }
 
