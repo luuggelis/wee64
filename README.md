@@ -4,11 +4,11 @@
 
 ### a small, lightweight operating system/kernel written in C/Assembly
 
-## Status
+## status
 
 VERY early in development, don't use (yet).
 
-## Requirements
+## requirements
 
 - some sort of ISO emulator (e.g. qemu)
 - gcc (C compiler)
@@ -19,7 +19,7 @@ VERY early in development, don't use (yet).
 - mtools
 - make
 
-Ubuntu/Debian-based Linux is recommended, but wsl on windows works fine too
+ubuntu/debian-based linux distro is recommended, but wsl on windows works fine too
 
 ## building & running
 
