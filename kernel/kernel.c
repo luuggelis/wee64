@@ -16,6 +16,16 @@ void print(const char *str) {
         {
             cursor = (cursor / VGA_WIDTH + 1 ) * VGA_WIDTH;
         }
+        else if (*str == '\b')
+        {
+            if (cursor > 0)
+            {
+                cursor--;
+
+                video[cursor * 2] = ' ';
+                video[cursor * 2 + 1] = 0x07;
+            }
+        }
         else
         {
             video[cursor * 2] = *str;
@@ -36,7 +46,7 @@ void kernel_main(void)
 
     idt_init();
 
-    print("wee64> ");
+    print("\nwee64> ");
 
     __asm__ volatile ("sti");
 

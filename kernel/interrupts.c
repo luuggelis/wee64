@@ -4,6 +4,11 @@
 extern void print(const char *str);
 extern void keyboard_interrupt(void);
 
+#define INPUT_SIZE 128
+
+static char input_buff[INPUT_SIZE];
+static int input_length;
+
 struct idt_entry
 {
     uint16_t offset_low;
@@ -97,7 +102,33 @@ void keyboard_handler(void)
         return;
     }
 
+    if (scancode == 0x1C)
+    {
+        input_buff[input_length] = '\0';
+
+        print("\n");
+        print("You typed: ");
+        print(input_buff);
+        print("\nwee64> ");
+
+        input_length = 0;
+
+        return;
+    }
+
     char c = 0;
+
+    if (scancode == 0x0E)
+    {
+        if (input_length > 0)
+        {
+            input_length--;
+
+            print("\b");
+        }
+
+        return;
+    }
 
     switch (scancode)
     {
@@ -127,12 +158,24 @@ void keyboard_handler(void)
         case 0x2D: c = 'x'; break;
         case 0x15: c = 'y'; break;
         case 0x2C: c = 'z'; break;
-
         case 0x39: c = ' '; break;
+        case 0x02: c = '1'; break;
+        case 0x03: c = '2'; break;
+        case 0x04: c = '3'; break;
+        case 0x05: c = '4'; break;
+        case 0x06: c = '5'; break;
+        case 0x07: c = '6'; break;
+        case 0x08: c = '7'; break;
+        case 0x09: c = '8'; break;
+        case 0x0A: c = '9'; break;
+        case 0x0B: c = '0'; break;
     }
 
-    if (c != 0)
+    if (c != 0 && input_length < INPUT_SIZE - 1)
     {
+        input_buff[input_length] = c;
+        input_length++;
+
         char str[2];
 
         str[0] = c;
