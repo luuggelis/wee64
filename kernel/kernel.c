@@ -1,19 +1,23 @@
-void kernel_main(void)
-{
-    volatile char *video = (volatile char *)0xB8000;
+#define VGA_WIDTH 80
+#define VGA_HEIGHT 25
 
-    video[0] = 'W';
-    video[1] = 0x07;
+static volatile unsigned char *video = (volatile unsigned char *)0xB8000;
 
-    video[2] = 'E';
-    video[3] = 0x07;
+static int cursor = 0;
 
-    video[4] = 'E';
-    video[5] = 0x07;
+void print(const char *str) {
+    while (*str != '\0')
+    {
+        video[cursor * 2] = *str;
+        video[cursor * 2 + 1] = 0x07;
 
-    video[6] = '6';
-    video[7] = 0x07;
+        cursor++;
+        str++;
+    }
+}
 
-    video[8] = '4';
-    video[9] = 0x07;
+void kernel_main(void) {
+    print("WEE64");
+    print("Welcome to wee64!\n");
+    print("64bit kernel online.\n");
 }
