@@ -40,6 +40,11 @@ extern kernel_main
 
 _start:
 
+    mov esp, stack_top
+
+    mov byte [0xB8000], 'A'
+    mov byte [0xB8001], 0x07
+
     mov eax, pdpt
     or eax, 0x3
     mov [pml4], eax
