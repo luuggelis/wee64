@@ -26,7 +26,7 @@ void print(const char *str) {
 
 void kernel_main(void)
 {
-    print("WEE64\n");
+    print("WEE64 0.1.0\n");
     print("Welcome to wee64!\n");
     print("64bit kernel online.\n");
 }
