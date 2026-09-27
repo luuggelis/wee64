@@ -8,6 +8,7 @@ extern void keyboard_interrupt(void);
 
 static char input_buff[INPUT_SIZE];
 static int input_length;
+static int shift_pressed = 0;
 
 struct idt_entry
 {
@@ -97,6 +98,18 @@ void keyboard_handler(void)
 {
     uint8_t scancode = inb(0x60);
 
+    if (scancode == 0x2A || scancode == 0x36)
+    {
+        shift_pressed = 1;
+        return;
+    }
+
+    if (scancode == 0xAA || scancode == 0xB6)
+    {
+        shift_pressed = 0;
+        return;
+    }
+
     if (scancode & 0x80)
     {
         return;
@@ -169,6 +182,11 @@ void keyboard_handler(void)
         case 0x09: c = '8'; break;
         case 0x0A: c = '9'; break;
         case 0x0B: c = '0'; break;
+    }
+
+    if (shift_pressed && c >= 'a' && c <= 'z')
+    {
+        c -= 'a' - 'A';
     }
 
     if (c != 0 && input_length < INPUT_SIZE - 1)
