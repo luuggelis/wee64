@@ -5,6 +5,9 @@
 
 extern void idt_init(void);
 
+extern volatile int line_ready;
+extern char line_buff[];
+
 static volatile unsigned char *video = (volatile unsigned char *)0xB8000;
 
 static int cursor = 0;
@@ -53,5 +56,15 @@ void kernel_main(void)
     while (1)
     {
         __asm__ volatile ("hlt");
+
+        if (line_ready)
+        {
+            print("you typed: ");
+            print(line_buff);
+            print("\n");
+
+            line_ready = 0;
+            print("wee64> ");
+        }
     }
 }

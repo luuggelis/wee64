@@ -10,6 +10,9 @@ static char input_buff[INPUT_SIZE];
 static int input_length;
 static int shift_pressed = 0;
 
+volatile int line_ready = 0;
+char line_buff[INPUT_SIZE];
+
 struct idt_entry
 {
     uint16_t offset_low;
@@ -118,12 +121,14 @@ void keyboard_handler(void)
     if (scancode == 0x1C)
     {
         input_buff[input_length] = '\0';
-
         print("\n");
-        print("You typed: ");
-        print(input_buff);
-        print("\nwee64> ");
 
+        for (int i = 0; i <= input_length; i++)
+        {
+            line_buff[i] = input_buff[i];
+        }
+
+        line_ready = 1;
         input_length = 0;
 
         return;

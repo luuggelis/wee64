@@ -26,7 +26,7 @@ wee64.iso: kernel.bin
 	mkdir -p iso/boot/grub
 	cp kernel.bin iso/boot/kernel.bin
 	cp boot/grub.cfg iso/boot/grub/grub.cfg
-	grub-mkrescue -o wee64.iso iso
+	grub-mkrescue -o wee64-0.1.0.iso iso
 
 clean:
-	rm -rf *.o *.bin wee64.iso iso
+	rm -rf *.o *.bin wee64-0.1.0.iso iso
