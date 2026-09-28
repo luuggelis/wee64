@@ -19,8 +19,11 @@ interrupts.o: kernel/interrupts.c kernel/io.h
 interrupts_asm.o: kernel/interrupts.asm
 	$(AS) -f elf64 $< -o $@
 
-kernel.bin: boot.o kernel.o interrupts.o interrupts_asm.o linker.ld
-	$(LD) $(LDFLAGS) boot.o kernel.o interrupts.o interrupts_asm.o -o $@
+string.o: kernel/string.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+kernel.bin: boot.o kernel.o interrupts.o interrupts_asm.o string.o linker.ld
+	$(LD) $(LDFLAGS) boot.o kernel.o interrupts.o interrupts_asm.o string.o -o $@
 
 wee64.iso: kernel.bin
 	mkdir -p iso/boot/grub

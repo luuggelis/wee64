@@ -4,6 +4,7 @@
 #define VGA_HEIGHT 25
 
 extern void idt_init(void);
+extern int strcmp(const char *a, const char *b);
 
 extern volatile int line_ready;
 extern char line_buff[];
@@ -59,9 +60,18 @@ void kernel_main(void)
 
         if (line_ready)
         {
-            print("you typed: ");
-            print(line_buff);
-            print("\n");
+            if (strcmp(line_buff, "help") == 0)
+            {
+                print("this is the help command!\n");
+            }
+            else if (strcmp(line_buff, "about") == 0)
+            {
+                print("wee64 0.1.0\n");
+            }
+            else if (line_buff[0] != '\0')
+            {
+                print("unknown command\n");
+            }
 
             line_ready = 0;
             print("wee64> ");
