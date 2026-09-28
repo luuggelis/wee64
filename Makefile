@@ -2,7 +2,7 @@ AS = nasm
 CC = gcc
 LD = ld
 
-VERSION = 0.2.0
+VERSION = 0.2.1
 ISO     = wee64-$(VERSION).iso
 BUILD   = build
 
