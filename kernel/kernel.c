@@ -43,6 +43,17 @@ void print(const char *str) {
     }
 }
 
+void clear_screen(void)
+{
+    for (int i = 0; i < VGA_WIDTH * VGA_HEIGHT; i++)
+    {
+        video[i * 2] = ' ';
+        video[i * 2 + 1] = 0x07;
+    }
+
+    cursor = 0;
+}
+
 void kernel_main(void)
 {
     print("WEE64 " WEE64_VERSION "\n");

@@ -1,5 +1,6 @@
 extern void print(const char *str);
 extern int strcmp(const char *a, const char *b);
+extern void clear_screen(void);
 
 #define HOSTNAME "root"
 
@@ -50,7 +51,15 @@ static void cmd_hostname(int argc, char **argv)
     (void)argc;
     (void)argv;
 
-    print("host: " HOSTNAME);
+    print("host: " HOSTNAME "\n");
+}
+
+static void cmd_clear(int argc, char **argv)
+{
+    (void)argc;
+    (void)argv;
+
+    clear_screen();
 }
 
 static const command_t commands[] =
@@ -60,6 +69,7 @@ static const command_t commands[] =
     { "echo",  "print arguments",   cmd_echo  },
     { "version", "prints current version", cmd_version },
     { "hostname", "prints host name",     cmd_hostname },
+    { "clear", "clears terminal",   cmd_clear },
 };
 
 #define NUM_COMMANDS (sizeof(commands) / sizeof(commands[0]))
