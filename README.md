@@ -8,6 +8,8 @@
 
 VERY early in development, don't use (yet).
 
+on version 0.2.1
+
 ## requirements
 
 - some sort of ISO emulator (e.g. qemu)
