@@ -97,6 +97,30 @@ void idt_init(void)
     print("5\n");
 }
 
+static const char sc_normal[] =
+{
+    /* 0x00 */ 0,    0,   '1', '2', '3', '4', '5', '6',
+    /* 0x08 */ '7',  '8', '9', '0', '-', '=', 0,   0,
+    /* 0x10 */ 'q',  'w', 'e', 'r', 't', 'y', 'u', 'i',
+    /* 0x18 */ 'o',  'p', '[', ']', 0,   0,   'a', 's',
+    /* 0x20 */ 'd',  'f', 'g', 'h', 'j', 'k', 'l', ';',
+    /* 0x28 */ '\'', '`', 0,   '\\','z', 'x', 'c', 'v',
+    /* 0x30 */ 'b',  'n', 'm', ',', '.', '/', 0,   '*',
+    /* 0x38 */ 0,    ' '
+};
+
+static const char sc_shift[] =
+{
+    /* 0x00 */ 0,    0,   '!', '@', '#', '$', '%', '^',
+    /* 0x08 */ '&',  '*', '(', ')', '_', '+', 0,   0,
+    /* 0x10 */ 'Q',  'W', 'E', 'R', 'T', 'Y', 'U', 'I',
+    /* 0x18 */ 'O',  'P', '{', '}', 0,   0,   'A', 'S',
+    /* 0x20 */ 'D',  'F', 'G', 'H', 'J', 'K', 'L', ':',
+    /* 0x28 */ '"',  '~', 0,   '|', 'Z', 'X', 'C', 'V',
+    /* 0x30 */ 'B',  'N', 'M', '<', '>', '?', 0,   '*',
+    /* 0x38 */ 0,    ' '
+};
+
 void keyboard_handler(void)
 {
     uint8_t scancode = inb(0x60);
@@ -148,50 +172,9 @@ void keyboard_handler(void)
         return;
     }
 
-    switch (scancode)
+    if (scancode < sizeof(sc_normal))
     {
-        case 0x1E: c = 'a'; break;
-        case 0x30: c = 'b'; break;
-        case 0x2E: c = 'c'; break;
-        case 0x20: c = 'd'; break;
-        case 0x12: c = 'e'; break;
-        case 0x21: c = 'f'; break;
-        case 0x22: c = 'g'; break;
-        case 0x23: c = 'h'; break;
-        case 0x17: c = 'i'; break;
-        case 0x24: c = 'j'; break;
-        case 0x25: c = 'k'; break;
-        case 0x26: c = 'l'; break;
-        case 0x32: c = 'm'; break;
-        case 0x31: c = 'n'; break;
-        case 0x18: c = 'o'; break;
-        case 0x19: c = 'p'; break;
-        case 0x10: c = 'q'; break;
-        case 0x13: c = 'r'; break;
-        case 0x1F: c = 's'; break;
-        case 0x14: c = 't'; break;
-        case 0x16: c = 'u'; break;
-        case 0x2F: c = 'v'; break;
-        case 0x11: c = 'w'; break;
-        case 0x2D: c = 'x'; break;
-        case 0x15: c = 'y'; break;
-        case 0x2C: c = 'z'; break;
-        case 0x39: c = ' '; break;
-        case 0x02: c = '1'; break;
-        case 0x03: c = '2'; break;
-        case 0x04: c = '3'; break;
-        case 0x05: c = '4'; break;
-        case 0x06: c = '5'; break;
-        case 0x07: c = '6'; break;
-        case 0x08: c = '7'; break;
-        case 0x09: c = '8'; break;
-        case 0x0A: c = '9'; break;
-        case 0x0B: c = '0'; break;
-    }
-
-    if (shift_pressed && c >= 'a' && c <= 'z')
-    {
-        c -= 'a' - 'A';
+        c = shift_pressed ? sc_shift[scancode] : sc_normal[scancode];
     }
 
     if (c != 0 && input_length < INPUT_SIZE - 1)
