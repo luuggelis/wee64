@@ -1,6 +1,8 @@
 extern void print(const char *str);
 extern int strcmp(const char *a, const char *b);
 
+#define HOSTNAME "root"
+
 typedef void (*cmd_fn)(int argc, char **argv);
 
 typedef struct
@@ -35,11 +37,29 @@ static void cmd_echo(int argc, char **argv)
     print("\n");
 }
 
+static void cmd_version(int argc, char **argv)
+{
+    (void)argc;
+    (void)argv;
+
+    print("wee64 v" WEE64_VERSION "\n");
+}
+
+static void cmd_hostname(int argc, char **argv)
+{
+    (void)argc;
+    (void)argv;
+
+    print("host: " HOSTNAME);
+}
+
 static const command_t commands[] =
 {
     { "help",  "list all commands", cmd_help  },
     { "about", "about wee64",       cmd_about },
     { "echo",  "print arguments",   cmd_echo  },
+    { "version", "prints current version", cmd_version },
+    { "hostname", "prints host name",     cmd_hostname },
 };
 
 #define NUM_COMMANDS (sizeof(commands) / sizeof(commands[0]))
