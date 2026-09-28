@@ -17,7 +17,7 @@ static void cmd_about(int argc, char **argv)
     (void)argc;
     (void)argv;
 
-    print("wee64 - " WEE64_VERSION " wee bit small, ain't it?\n");
+    print("wee64 " WEE64_VERSION " - wee bit small, ain't it?\n"); // wee64 0.2.0 - wee bit...
 }
 
 static void cmd_echo(int argc, char **argv)
