@@ -69,8 +69,6 @@ void idt_init(void)
     idt_descriptor.limit = sizeof(idt) - 1;
     idt_descriptor.base = (uint64_t)idt;
 
-    print("1\n");
-
     for (int i = 0; i < 256; i++)
     {
         idt[i].offset_low = 0;
@@ -82,19 +80,11 @@ void idt_init(void)
         idt[i].zero = 0;
     }
 
-    print("2\n");
-
     idt_set_gate(33, keyboard_interrupt);
-
-    print("3\n");
 
     pic_remap();
 
-    print("4\n");
-
     __asm__ volatile ("lidt %0" : : "m"(idt_descriptor));
-
-    print("5\n");
 }
 
 static const char sc_normal[] =

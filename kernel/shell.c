@@ -20,9 +20,18 @@ static void cmd_about(int argc, char **argv)
     (void)argc;
     (void)argv;
 
-    print("wee64 " WEE64_VERSION " - wee bit small, ain't it?\n"); // wee64 0.2.0 - wee bit...
-    print("\nsmall open-source kernel/OS developed in C\n");
-    print("uses a x86_64 kernel\n");
+    print(
+        "  _       __  _____  _____ \n"
+        " | |     / / | ____|| ____|\n"
+        " | | /| / /  |  _|  |  _|  \n"
+        " | |/ |/ /   | |___ | |___ \n"
+        " |__/|__/    |_____||_____|\n"
+        " \n"
+        "           WEE64\n"
+        "  wee bit small, ain't it?\n"
+        "a tiny open-source x86_64 OS\n"
+        "\n"
+    );
 }
 
 static void cmd_echo(int argc, char **argv)
