@@ -5,6 +5,7 @@
 
 extern void idt_init(void);
 extern int strcmp(const char *a, const char *b);
+extern void shell_execute(char *line);
 
 extern volatile int line_ready;
 extern char line_buff[];
@@ -42,33 +43,6 @@ void print(const char *str) {
     }
 }
 
-static int tokenize(char *line, char **argv, int max)
-{
-    int argc = 0;
-
-    while (*line != '\0' && argc < max)
-    {
-        while (*line == ' ')
-        {
-            *line = '\0';
-            line++;
-        }
-
-        if (*line != '\0')
-        {
-            argv[argc] = line;
-            argc++;
-        }
-
-        while (*line != '\0' && *line != ' ')
-        {
-            line++;
-        }
-    }
-
-    return argc;
-}
-
 void kernel_main(void)
 {
     print("WEE64 0.1.0\n");
@@ -87,40 +61,7 @@ void kernel_main(void)
 
         if (line_ready)
         {
-            char *argv[16];
-            int argc = tokenize(line_buff, argv, 16);
-
-            if (argc > 0)
-            {
-                if (strcmp(argv[0], "help") == 0)
-                {
-                    print("this is the help command!\n");
-                }
-                else if (strcmp(argv[0], "about") == 0)
-                {
-                    print("wee64 0.1.0\n");
-                }
-                else if (strcmp(argv[0], "echo") == 0)
-                {
-                    for (int i = 1; i < argc; i++)
-                    {
-                        print(argv[i]);
-
-                        if (i < argc - 1)
-                        {
-                            print(" ");
-                        }
-                    }
-
-                    print("\n");
-                }
-                else
-                {
-                    print("unknown command: ");
-                    print(argv[0]);
-                    print("\n");
-                }
-            }
+            shell_execute(line_buff);
 
             line_ready = 0;
             print("wee64> ");
