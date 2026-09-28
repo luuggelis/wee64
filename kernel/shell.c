@@ -1,21 +1,23 @@
 extern void print(const char *str);
 extern int strcmp(const char *a, const char *b);
 
-typedef void (*cmd_fn)(int argc, int **argv);
+typedef void (*cmd_fn)(int argc, char **argv);
 
 typedef struct
 {
     const char *name;
     const char *help;
     cmd_fn fn;
-} command;
+} command_t;
 
-static void cmd_about(int argv, int **argc)
+static void cmd_help(int argc, char **argv);
+
+static void cmd_about(int argc, char **argv)
 {
-    (void)argv;
     (void)argc;
+    (void)argv;
 
-    print("wee64 0.1.0 - wee bit small, ain't it?\n");
+    print("wee64 - " WEE64_VERSION " wee bit small, ain't it?\n");
 }
 
 static void cmd_echo(int argc, char **argv)
@@ -30,5 +32,82 @@ static void cmd_echo(int argc, char **argv)
         }
     }
 
+    print("\n");
+}
+
+static const command_t commands[] =
+{
+    { "help",  "list all commands", cmd_help  },
+    { "about", "about wee64",       cmd_about },
+    { "echo",  "print arguments",   cmd_echo  },
+};
+
+#define NUM_COMMANDS (sizeof(commands) / sizeof(commands[0]))
+
+static void cmd_help(int argc, char **argv)
+{
+    (void)argc;
+    (void)argv;
+
+    for (unsigned i = 0; i < NUM_COMMANDS; i++)
+    {
+        print(commands[i].name);
+        print(" - ");
+        print(commands[i].help);
+        print("\n");
+    }
+}
+
+static int tokenize(char *line, char **argv, int max)
+{
+    int argc = 0;
+
+    while (*line != '\0' && argc < max)
+    {
+        // skip spaces, turning them into terminators
+        while (*line == ' ')
+        {
+            *line = '\0';
+            line++;
+        }
+
+        // if were now at a word, record its start
+        if (*line != '\0')
+        {
+            argv[argc] = line;
+            argc++;
+        }
+
+        // skip to the end of the word
+        while (*line != '\0' && *line != ' ')
+        {
+            line++;
+        }
+    }
+
+    return argc;
+}
+
+void shell_execute(char *line)
+{
+    char *argv[16];
+    int argc = tokenize(line, argv, 16);
+
+    if (argc == 0)
+    {
+        return;
+    }
+
+    for (unsigned i = 0; i < NUM_COMMANDS; i++)
+    {
+        if (strcmp(argv[0], commands[i].name) == 0)
+        {
+            commands[i].fn(argc, argv);
+            return;
+        }
+    }
+
+    print("unknown command: ");
+    print(argv[0]);
     print("\n");
 }

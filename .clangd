@@ -1,0 +1,5 @@
+CompileFlags:
+  Add:
+    - -m64
+    - -ffreestanding
+    - -DWEE64_VERSION="0.2.0"

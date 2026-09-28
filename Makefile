@@ -2,12 +2,14 @@ AS = nasm
 CC = gcc
 LD = ld
 
-VERSION = 0.1.0
+VERSION = 0.2.0
 ISO     = wee64-$(VERSION).iso
 BUILD   = build
 
 CFLAGS  = -m64 -ffreestanding -fno-pie -fno-stack-protector -mno-red-zone \
-          -mgeneral-regs-only -Wall -Wextra -MMD -MP
+          -mgeneral-regs-only -Wall -Wextra -MMD -MP \
+          -DWEE64_VERSION=\"$(VERSION)\"
+
 LDFLAGS = -m elf_x86_64 -T linker.ld
 
 C_SRCS   = kernel/kernel.c kernel/interrupts.c kernel/shell.c kernel/string.c

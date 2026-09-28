@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# outdated
+
 set -e
 
 make clean
