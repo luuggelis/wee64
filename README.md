@@ -8,7 +8,7 @@
 
 VERY early in development, don't use (yet).
 
-on version 0.2.1
+on version 0.2.2
 
 ## requirements
 
