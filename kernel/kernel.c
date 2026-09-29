@@ -14,6 +14,22 @@ static volatile unsigned char *video = (volatile unsigned char *)0xB8000;
 
 static int cursor = 0;
 
+static void scroll(void)
+{
+    for (int i = 0; i < VGA_WIDTH * (VGA_HEIGHT - 1) * 2; i++)
+    {
+        video[i] = video[i + VGA_WIDTH * 2];
+    }
+
+    for (int i = VGA_WIDTH * (VGA_HEIGHT - 1) * 2; i < VGA_WIDTH * VGA_HEIGHT * 2; i += 2)
+    {
+        video[i] = ' ';
+        video[i + 1] = 0x07;
+    }
+
+    cursor -= VGA_WIDTH;
+}
+
 void print(const char *str) {
     while (*str != '\0')
     {
@@ -39,6 +55,11 @@ void print(const char *str) {
             cursor++;
         }
 
+        if (cursor >= VGA_WIDTH * VGA_HEIGHT)
+        {
+            scroll();
+        }
+
         str++;
     }
 }
@@ -59,7 +80,7 @@ void kernel_main(void)
     print("WEE64 " WEE64_VERSION "\n");
     print("welcome to wee64!\n");
 
-    idt_init();
+    idt_init(); 
 
     print("\nwee64> ");
 
