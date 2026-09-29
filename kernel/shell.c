@@ -1,6 +1,7 @@
 extern void print(const char *str);
 extern int strcmp(const char *a, const char *b);
 extern void clear_screen(void);
+extern void diagnostics(void);
 
 #define HOSTNAME "root"
 
@@ -57,6 +58,14 @@ static void cmd_version(int argc, char **argv)
     print("wee64 v" WEE64_VERSION "\n");
 }
 
+static void cmd_dia(int argc, char **argv)
+{
+    (void)argc;
+    (void)argv;
+
+    diagnostics();
+}
+
 static void cmd_hostname(int argc, char **argv)
 {
     (void)argc;
@@ -75,12 +84,13 @@ static void cmd_clear(int argc, char **argv)
 
 static const command_t commands[] =
 {
-    { "help",  "list all commands", cmd_help  },
-    { "about", "about wee64",       cmd_about },
-    { "echo",  "print arguments",   cmd_echo  },
-    { "version", "prints current version", cmd_version },
-    { "hostname", "prints host name",     cmd_hostname },
-    { "clear", "clears terminal",   cmd_clear },
+    { "help",     "list all commands",       cmd_help     },
+    { "about",    "about wee64",             cmd_about    },
+    { "echo",     "print arguments",         cmd_echo     },
+    { "version",  "prints current version",  cmd_version  },
+    { "hostname", "prints host name",        cmd_hostname },
+    { "clear",    "clears terminal",         cmd_clear    },
+    { "dia",      "show system diagnostics", cmd_dia      },
 };
 
 #define NUM_COMMANDS (sizeof(commands) / sizeof(commands[0]))

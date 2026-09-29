@@ -80,7 +80,7 @@ void kernel_main(void)
     print("WEE64 " WEE64_VERSION "\n");
     print("welcome to wee64!\n");
 
-    idt_init(); 
+    idt_init();
 
     print("\nwee64> ");
 
