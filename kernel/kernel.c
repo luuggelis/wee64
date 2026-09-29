@@ -39,7 +39,7 @@ void print(const char *str) {
         }
         else if (*str == '\b')
         {
-            if (cursor > 0)
+             if (cursor > 0)
             {
                 cursor--;
 
