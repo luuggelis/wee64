@@ -5,13 +5,20 @@ extern void print(const char *str);
 extern void keyboard_interrupt(void);
 
 #define INPUT_SIZE 128
+#define HISTORY_SIZE 16
 
 static char input_buff[INPUT_SIZE];
 static int input_length;
 static int shift_pressed = 0;
 
+static char history[HISTORY_SIZE][INPUT_SIZE];
+static int history_count = 0;
+static int history_index = 0;
+
 volatile int line_ready = 0;
 char line_buff[INPUT_SIZE];
+
+static int extended = 0;
 
 struct idt_entry
 {
@@ -115,6 +122,50 @@ void keyboard_handler(void)
 {
     uint8_t scancode = inb(0x60);
 
+    if (scancode == 0xE0)
+    {
+        extended = 1;
+        return;
+    }
+
+    if (extended)
+    {
+        extended = 0;
+
+        if (scancode == 0x48 && history_index > 0)
+        {
+            history_index--;
+        }
+
+        else if (scancode == 0x50 && history_index < history_count - 1)
+        {
+            history_index++;
+        }
+        else    
+        {
+            return;
+        }
+
+        // erase what's currently typed on screen
+        while (input_length > 0)
+        {
+            input_length--;
+            print("\b");
+        }
+
+        // load the historical line and print it
+        int i = 0;
+        while (history[history_index % HISTORY_SIZE][i] != '\0')
+        {
+            input_buff[i] = history[history_index % HISTORY_SIZE][i];
+            i++;
+        }
+        input_length = i;
+
+        print(input_buff);
+        return;
+    }
+
     if (scancode == 0x2A || scancode == 0x36)
     {
         shift_pressed = 1;
@@ -133,7 +184,7 @@ void keyboard_handler(void)
     }
 
     if (scancode == 0x1C)
-    {
+    { 
         input_buff[input_length] = '\0';
         print("\n");
 
@@ -141,6 +192,18 @@ void keyboard_handler(void)
         {
             line_buff[i] = input_buff[i];
         }
+
+        if (input_length > 0)
+        {
+            for (int i = 0; i <= input_length; i++)
+            {
+                history[history_count % HISTORY_SIZE][i] = input_buff[i];
+            }
+
+            history_count++;
+        }
+
+        history_index = history_count;
 
         line_ready = 1;
         input_length = 0;
