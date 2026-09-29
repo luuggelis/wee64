@@ -34,6 +34,19 @@ static void cmd_about(int argc, char **argv)
     );
 }
 
+static void cmd_exit(int argc, char **argv)
+{
+    (void)argc;
+    (void)argv;
+
+    print("halting...");
+
+    for (;;)
+    {
+        __asm__ volatile ("hlt");
+    }
+}
+
 static void cmd_echo(int argc, char **argv)
 {
     for (int i = 1; i < argc; i++)
@@ -81,6 +94,7 @@ static const command_t commands[] =
     { "version", "prints current version", cmd_version },
     { "hostname", "prints host name",     cmd_hostname },
     { "clear", "clears terminal",   cmd_clear },
+    { "exit", "closes wee64",        cmd_exit },
 };
 
 #define NUM_COMMANDS (sizeof(commands) / sizeof(commands[0]))
