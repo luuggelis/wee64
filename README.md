@@ -29,7 +29,7 @@ ubuntu/debian-based linux distro is recommended, but wsl on windows works fine t
 git clone https://github.com/luuggelis/wee64.git
 cd wee64
 make
-qemu-system-x86_64 -cdrom wee64.iso
+make run
 ```
 
 ## structure
