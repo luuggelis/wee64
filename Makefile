@@ -12,7 +12,7 @@ CFLAGS  = -m64 -ffreestanding -fno-pie -fno-stack-protector -mno-red-zone \
 
 LDFLAGS = -m elf_x86_64 -T linker.ld
 
-C_SRCS   = kernel/kernel.c kernel/interrupts.c kernel/shell.c kernel/string.c
+C_SRCS   = kernel/kernel.c kernel/interrupts.c kernel/shell.c kernel/string.c kernel/diagnostics.c
 C_OBJS   = $(patsubst kernel/%.c,$(BUILD)/%.o,$(C_SRCS))
 ASM_OBJS = $(BUILD)/boot.o $(BUILD)/interrupts_asm.o
 OBJS     = $(ASM_OBJS) $(C_OBJS)
