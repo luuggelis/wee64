@@ -98,4 +98,6 @@ void kernel_main(void)
             print("wee64> ");
         }
     }
+
+    print("testestestwowwwowowowowowowowowowo\n");
 }
