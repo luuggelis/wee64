@@ -38,7 +38,7 @@ void print(const char *str) {
             cursor = (cursor / VGA_WIDTH + 1 ) * VGA_WIDTH;
         }
         else if (*str == '\b')
-        {
+        { 
              if (cursor > 0)
             {
                 cursor--;
@@ -77,12 +77,12 @@ void clear_screen(void)
 
 void kernel_main(void)
 {
-    print("WEE64 " WEE64_VERSION "\n");
-    print("welcome to wee64!\n");
+    print("koivu " WEE64_VERSION "\n");
+    print("welcome to koivu!\n");
 
     idt_init();
 
-    print("\nwee64> ");
+    print("\nkoivu> ");
 
     __asm__ volatile ("sti");
 
@@ -95,9 +95,7 @@ void kernel_main(void)
             shell_execute(line_buff);
 
             line_ready = 0;
-            print("wee64> ");
+            print("koivu> ");
         }
     }
-
-    print("testestestwowwwowowowowowowowowowo\n");
 }

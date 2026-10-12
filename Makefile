@@ -3,7 +3,7 @@ CC = gcc
 LD = ld
 
 VERSION = 0.2.3
-ISO     = wee64-$(VERSION).iso
+ISO     = koivu-$(VERSION).iso
 BUILD   = build
 
 CFLAGS  = -m64 -ffreestanding -fno-pie -fno-stack-protector -mno-red-zone \

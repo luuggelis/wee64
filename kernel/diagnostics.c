@@ -56,7 +56,7 @@ void diagnostics(void)
     uint64_t kernel_end = (uint64_t)&_kernel_end;
     uint64_t kernel_size = kernel_end - kernel_start;
 
-    print("wee64 diagnostics\n");
+    print("koivu diagnostics\n");
     print("-----------------\n");
 
     print("\nkernel\n");
