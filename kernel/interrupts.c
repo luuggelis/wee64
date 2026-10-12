@@ -20,6 +20,36 @@ char line_buff[INPUT_SIZE];
 
 static int extended = 0;
 
+#define DECLARE_ISR(n) extern void isr_##n(void)
+
+DECLARE_ISR(0);  DECLARE_ISR(1);
+DECLARE_ISR(2);  DECLARE_ISR(3);
+DECLARE_ISR(4);  DECLARE_ISR(5);
+DECLARE_ISR(6);  DECLARE_ISR(7);
+DECLARE_ISR(8);  DECLARE_ISR(9);
+DECLARE_ISR(10); DECLARE_ISR(11);
+DECLARE_ISR(12); DECLARE_ISR(13);
+DECLARE_ISR(14); DECLARE_ISR(15);
+DECLARE_ISR(16); DECLARE_ISR(17);
+DECLARE_ISR(18); DECLARE_ISR(19);
+DECLARE_ISR(20); DECLARE_ISR(21);
+DECLARE_ISR(22); DECLARE_ISR(23);
+DECLARE_ISR(24); DECLARE_ISR(25);
+DECLARE_ISR(26); DECLARE_ISR(27);
+DECLARE_ISR(28); DECLARE_ISR(29);
+DECLARE_ISR(30); DECLARE_ISR(31);
+
+static void (*const exception_stubs[32])(void) = {
+    isr_0,  isr_1,  isr_2,  isr_3,
+    isr_4,  isr_5,  isr_6,  isr_7,
+    isr_8,  isr_9,  isr_10, isr_11,
+    isr_12, isr_13, isr_14, isr_15,
+    isr_16, isr_17, isr_18, isr_19,
+    isr_20, isr_21, isr_22, isr_23,
+    isr_24, isr_25, isr_26, isr_27,
+    isr_28, isr_29, isr_30, isr_31
+};
+
 struct idt_entry
 {
     uint16_t offset_low;
@@ -86,7 +116,11 @@ void idt_init(void)
         idt[i].offset_high = 0;
         idt[i].zero = 0;
     }
-
+    
+    for (int i = 0; i < 32; i++)
+    {
+        idt_set_gate(i, exception_stubs[i]);
+    }
     idt_set_gate(33, keyboard_interrupt);
 
     pic_remap();
