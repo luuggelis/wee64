@@ -1,6 +1,6 @@
-<img width="418" height="149" alt="weelogo" src="https://github.com/user-attachments/assets/03ce344e-f4ec-4938-87e5-1cfd7f1d4d10" />
+<img width="800" height="350" alt="koivulogo" src="https://github.com/user-attachments/assets/97c8396a-f054-495a-a290-121c21f699fc" />
 
-# wee64
+# koivu
 
 ### a small, lightweight operating system/kernel written in C/Assembly
 
@@ -26,7 +26,7 @@ ubuntu/debian-based linux distro is recommended, but wsl on windows works fine t
 ## building & running
 
 ```bash
-git clone https://github.com/luuggelis/wee64.git
+git clone https://github.com/luuggelis/koivu.git
 cd wee64
 make
 make run
@@ -37,7 +37,3 @@ make run
 - `boot/` — bootloader and GRUB config
 - `kernel/` — kernel source (C + assembly)
 - `linker.ld` — linker script
-
----
-
-*wee bit small, ain't it?*
