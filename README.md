@@ -27,7 +27,7 @@ ubuntu/debian-based linux distro is recommended, but wsl on windows works fine t
 
 ```bash
 git clone https://github.com/luuggelis/koivu.git
-cd wee64
+cd koivu
 make
 make run
 ```
