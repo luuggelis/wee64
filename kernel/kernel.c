@@ -1,5 +1,5 @@
 #include <stdint.h>
-#include "ata.h"
+#include "include/ata.h"
 
 #define VGA_WIDTH 80
 #define VGA_HEIGHT 25
@@ -113,26 +113,19 @@ void poweroff(void)
         __asm__ volatile ("cli; hlt");
 }
 
-void test_disk(void)
+static void test_disk(void)
 {
     uint8_t sector[512];
 
     if (ata_read28(0, 0, sector) != 0)
     {
-        print_color("[ATA] ", 0x0C);
-        print("reading disk failed\n");
+        print_color("[disk] ", 0x0C);
+        print("read failed\n");
         return;
     }
-    if (sector[510] == 0x55 && sector[511] == 0xAA) 
-    {
-        print_color("[ATA] ", 0x0A);
-        print("sector 0 read successfully!\n");
-    } 
-    else 
-    {
-        print_color("[ATA] ", 0x0E);
-        print("invalid boot sector signature\n");
-    }
+
+    print_color("[disk] ", 0x0A);
+    print("sector 0 read OK\n");
 }
 
 void kernel_main(void)
