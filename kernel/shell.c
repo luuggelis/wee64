@@ -34,7 +34,7 @@ static void cmd_about(int argc, char **argv)
     );
 
     print_color("-----------------------------------------\n", 0x08);
-    print_color("lightweight open-source OS\n", 0x07);
+    print_color("a lightweight open-source OS\n", 0x07);
     print_color("arch: x86_64\n", 0x0B);
     print_color("license: MIT\n", 0x0E);
     print_color("source: https://github.com/luuggelis/wee64\n", 0x07);
