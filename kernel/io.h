@@ -38,5 +38,4 @@ static inline uint16_t inw(uint16_t port)
     return value;
 }
 
-
 #endif

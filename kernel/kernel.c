@@ -119,21 +119,27 @@ void test_disk(void)
 
     if (ata_read28(0, 0, sector) != 0)
     {
-        print_color("[ATA] reading disk failed", 0x0C);
+        print_color("[ATA] ", 0x0C);
+        print("reading disk failed\n");
         return;
     }
     if (sector[510] == 0x55 && sector[511] == 0xAA) 
     {
-        print_color("[ATA] sector 0 read successfully!\n", 0x0A);
+        print_color("[ATA] ", 0x0A);
+        print("sector 0 read successfully!\n");
     } 
     else 
     {
-        print_color("[ATA] invalid boot sector signature\n", 0x0E);
+        print_color("[ATA] ", 0x0E);
+        print("invalid boot sector signature\n");
     }
 }
 
 void kernel_main(void)
 {
+    test_disk();
+    print("\n");
+
     print("WEE64 " WEE64_VERSION "\n");
     print("welcome to ");
     print_color("wee64!\n", 0x0A);
@@ -141,8 +147,6 @@ void kernel_main(void)
     idt_init();
 
     print("\nwsh> ");
-
-    test_disk();
 
     __asm__ volatile ("sti");
 
