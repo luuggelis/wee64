@@ -25,4 +25,18 @@ static inline void outb(uint16_t port, uint8_t value)
     );
 }
 
+static inline uint16_t inw(uint16_t port)
+{
+    uint16_t value;
+
+    __asm__ volatile (
+        "inw %1, %0"
+        : "=a"(value)
+        : "Nd"(port)
+    );
+
+    return value;
+}
+
+
 #endif

@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include "ata.h"
 
 #define VGA_WIDTH 80
 #define VGA_HEIGHT 25
@@ -112,6 +113,25 @@ void poweroff(void)
         __asm__ volatile ("cli; hlt");
 }
 
+void test_disk(void)
+{
+    uint8_t sector[512];
+
+    if (ata_read28(0, 0, sector) != 0)
+    {
+        print_color("[ATA] reading disk failed", 0x0C);
+        return;
+    }
+    if (sector[510] == 0x55 && sector[511] == 0xAA) 
+    {
+        print_color("[ATA] sector 0 read successfully!\n", 0x0A);
+    } 
+    else 
+    {
+        print_color("[ATA] invalid boot sector signature\n", 0x0E);
+    }
+}
+
 void kernel_main(void)
 {
     print("WEE64 " WEE64_VERSION "\n");
@@ -121,6 +141,8 @@ void kernel_main(void)
     idt_init();
 
     print("\nwsh> ");
+
+    test_disk();
 
     __asm__ volatile ("sti");
 
