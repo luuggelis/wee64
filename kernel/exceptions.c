@@ -63,7 +63,7 @@ static void print_uint(uint64_t value)
 __attribute__((noreturn))
 void exception_handler(uint64_t vector, uint64_t error_code)
 {
-    print("\n\n*** KOIVU KERNEL EXCEPTION ***\n");
+    print("\n\n*** WEE64 KERNEL EXCEPTION ***\n");
 
     if (vector < 32) {
         print("exception: ");

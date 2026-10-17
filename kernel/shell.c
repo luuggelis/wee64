@@ -22,8 +22,15 @@ static void cmd_about(int argc, char **argv)
     (void)argv;
 
     print(
-        "           KOIVU\n"
-        "a small open-source x86_64 OS\n"
+        "                    ____    ___ \n"
+        "                   / ___|  /   |\n"
+        "__      _____  ___/ /___  / /| |\n"
+        "\ \ /\ / / _ \/ _ \ ___ \/ /_| |\n"
+        " \ V  V /  __/  __/ \_/ |\___  |\n"
+        "  \_/\_/ \___|\___\_____/    |_/\n"
+        "--------------------------------\n"                                                        
+        "   a small and open-source OS   \n"
+        "             x86_64             \n"
         "\n"
     );
 }

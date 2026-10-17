@@ -77,12 +77,12 @@ void clear_screen(void)
 
 void kernel_main(void)
 {
-    print("koivu " WEE64_VERSION "\n");
-    print("welcome to koivu!\n");
+    print("WEE64 " WEE64_VERSION "\n");
+    print("welcome to wee64!\n");
 
     idt_init();
 
-    print("\nkoivu> ");
+    print("\nwsh> ");
 
     __asm__ volatile ("sti");
 
@@ -95,7 +95,7 @@ void kernel_main(void)
             shell_execute(line_buff);
 
             line_ready = 0;
-            print("koivu> ");
+            print("wsh> ");
         }
     }
 }
