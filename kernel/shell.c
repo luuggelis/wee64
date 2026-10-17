@@ -22,12 +22,12 @@ static void cmd_about(int argc, char **argv)
     (void)argv;
 
     print(
-        "                    ____    ___ \n"
-        "                   / ___|  /   |\n"
-        "__      _____  ___/ /___  / /| |\n"
-        "\ \ /\ / / _ \/ _ \ ___ \/ /_| |\n"
-        " \ V  V /  __/  __/ \_/ |\___  |\n"
-        "  \_/\_/ \___|\___\_____/    |_/\n"
+        "\n"
+        "        _      _____  ___       \n"
+        "       | | /| / / _ \/ _ \      \n"
+        "       | |/ |/ /  __/  __/      \n"
+        "       |__/|__/\___/\___/       \n"
+        "\n"                                   
         "--------------------------------\n"                                                        
         "   a small and open-source OS   \n"
         "             x86_64             \n"
@@ -55,7 +55,7 @@ static void cmd_version(int argc, char **argv)
     (void)argc;
     (void)argv;
 
-    print("koivu v" WEE64_VERSION "\n");
+    print("wee64 v" WEE64_VERSION "\n");
 }
 
 static void cmd_dia(int argc, char **argv)
@@ -85,7 +85,7 @@ static void cmd_clear(int argc, char **argv)
 static const command_t commands[] =
 {
     { "help",     "list all commands",       cmd_help     },
-    { "about",    "about koivu",             cmd_about    },
+    { "about",    "about wee64",             cmd_about    },
     { "echo",     "print arguments",         cmd_echo     },
     { "version",  "prints current version",  cmd_version  },
     { "hostname", "prints host name",        cmd_hostname },

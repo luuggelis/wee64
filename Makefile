@@ -46,7 +46,7 @@ $(ISO): $(BUILD)/kernel.bin boot/grub.cfg
 	grub-mkrescue -o $@ iso
 
 run: $(ISO)
-	qemu-system-x86_64 -cdrom $(ISO)
+	qemu-system-x86_64 -cdrom $(ISO) -display gtk
 
 clean:
 	rm -rf $(BUILD) iso $(ISO)
