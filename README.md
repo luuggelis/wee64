@@ -1,6 +1,4 @@
-<img width="800" height="350" alt="koivulogo" src="https://github.com/user-attachments/assets/97c8396a-f054-495a-a290-121c21f699fc" />
-
-# koivu
+# wee64
 
 ### a small, lightweight operating system/kernel written in C/Assembly
 
