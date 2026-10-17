@@ -24,8 +24,8 @@ ubuntu/debian-based linux distro is recommended, but wsl on windows works fine t
 ## building & running
 
 ```bash
-git clone https://github.com/luuggelis/koivu.git
-cd koivu
+git clone https://github.com/luuggelis/wee64.git
+cd wee64
 make
 make run
 ```
