@@ -15,8 +15,9 @@ CFLAGS  = -m64 -ffreestanding -fno-pie -fno-stack-protector -mno-red-zone \
 LDFLAGS = -m elf_x86_64 -T linker.ld
 
 C_SRCS   = kernel/kernel.c kernel/interrupts.c kernel/shell.c kernel/string.c kernel/diagnostics.c kernel/exceptions.c \
-		   kernel/ata.c
-C_OBJS   = $(patsubst kernel/%.c,$(BUILD)/%.o,$(C_SRCS))
+		   kernel/ata.c fs/fat32.c
+
+C_OBJS = $(patsubst %.c,$(BUILD)/%.o,$(C_SRCS))
 ASM_OBJS = $(BUILD)/boot.o $(BUILD)/interrupts_asm.o $(BUILD)/exceptions_asm.o
 OBJS     = $(ASM_OBJS) $(C_OBJS)
 
@@ -36,7 +37,8 @@ $(BUILD)/interrupts_asm.o: kernel/interrupts.asm | $(BUILD)
 $(BUILD)/exceptions_asm.o: kernel/exceptions.asm | $(BUILD)
 	$(AS) -f elf64 $< -o $@
 
-$(BUILD)/%.o: kernel/%.c | $(BUILD)
+$(BUILD)/%.o: %.c
+	mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(BUILD)/kernel.bin: $(OBJS) linker.ld

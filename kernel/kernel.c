@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include "include/ata.h"
+#include "../fs/include/fat32.h"
 
 #define VGA_WIDTH 80
 #define VGA_HEIGHT 25
@@ -7,6 +8,8 @@
 extern void idt_init(void);
 extern int strcmp(const char *a, const char *b);
 extern void shell_execute(char *line);
+
+static fat32_fs_t filesystem;
 
 extern volatile int line_ready;
 extern char line_buff[];
@@ -128,9 +131,24 @@ static void test_disk(void)
     print("sector 0 read OK\n");
 }
 
+static void test_fs(void)
+{
+    if (fat32_init(&filesystem, 0) != 0)
+    {
+        print_color("[fat32] ", 0x0C);
+        print("initialization failed\n");
+        return;
+    }
+
+    print_color("[fat32] ", 0x0A);
+    print("fs initialized\n");
+}
+
 void kernel_main(void)
 {
     test_disk();
+    test_fs();
+
     print("\n");
 
     print("WEE64 " WEE64_VERSION "\n");
