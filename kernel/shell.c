@@ -1,7 +1,9 @@
 extern void print(const char *str);
+extern void print_color(const char *str, unsigned char color);
 extern int strcmp(const char *a, const char *b);
 extern void clear_screen(void);
 extern void diagnostics(void);
+extern void poweroff(void);
 
 #define HOSTNAME "root"
 
@@ -21,18 +23,21 @@ static void cmd_about(int argc, char **argv)
     (void)argc;
     (void)argv;
 
-    print(
+    print_color(
         "\n"
-        "        _      _____  ___       \n"
-        "       | | /| / / _ \/ _ \      \n"
-        "       | |/ |/ /  __/  __/      \n"
-        "       |__/|__/\___/\___/       \n"
-        "\n"                                   
-        "--------------------------------\n"                                                        
-        "   a small and open-source OS   \n"
-        "             x86_64             \n"
-        "\n"
+        " $$   $$  $$$$$$  $$$$$$    $$    $$  $$ \n"
+        " $$   $$  $$      $$       $$     $$  $$ \n"
+        " $$ $ $$  $$$$    $$$$    $$$$$   $$$$$$ \n"
+        " $$$$$$$  $$      $$      $$  $$      $$ \n"
+        "  $$ $$   $$$$$$  $$$$$$   $$$$       $$ \n",
+        0x0A
     );
+
+    print_color("-----------------------------------------\n", 0x08);
+    print_color("lightweight open-source OS\n", 0x07);
+    print_color("arch: x86_64\n", 0x0B);
+    print_color("license: MIT\n", 0x0E);
+    print_color("source: https://github.com/luuggelis/wee64\n", 0x07);
 }
 
 static void cmd_echo(int argc, char **argv)
@@ -55,7 +60,7 @@ static void cmd_version(int argc, char **argv)
     (void)argc;
     (void)argv;
 
-    print("wee64 v" WEE64_VERSION "\n");
+    print_color("wee64 v" WEE64_VERSION "\n", 0x0B);
 }
 
 static void cmd_dia(int argc, char **argv)
@@ -82,6 +87,15 @@ static void cmd_clear(int argc, char **argv)
     clear_screen();
 }
 
+static void cmd_exit(int argc, char **argv)
+{
+    (void)argc;
+    (void)argv;
+
+    print_color("wee64 shutting down...\n", 0x0E);
+    poweroff();
+}
+
 static const command_t commands[] =
 {
     { "help",     "list all commands",       cmd_help     },
@@ -91,6 +105,7 @@ static const command_t commands[] =
     { "hostname", "prints host name",        cmd_hostname },
     { "clear",    "clears terminal",         cmd_clear    },
     { "dia",      "show system diagnostics", cmd_dia      },
+    { "exit",     "shuts off wee64",         cmd_exit     },
 };
 
 #define NUM_COMMANDS (sizeof(commands) / sizeof(commands[0]))
@@ -158,7 +173,7 @@ void shell_execute(char *line)
         }
     }
 
-    print("unknown command: ");
+    print_color("unknown command: ", 0x0C);
     print(argv[0]);
     print("\n");
 }

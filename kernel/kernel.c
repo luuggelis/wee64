@@ -64,6 +64,30 @@ void print(const char *str) {
     }
 }
 
+void print_color(const char* str, unsigned char color)
+{
+    while (*str != '\0')
+    {
+        if (*str == '\n')
+        {
+            cursor = (cursor / VGA_WIDTH + 1) * VGA_WIDTH;
+        }
+        else
+        {
+            video[cursor * 2] = *str;
+            video[cursor * 2 + 1] = color;
+            cursor++;
+        }
+
+        if (cursor >= VGA_WIDTH * VGA_HEIGHT)
+        {
+            scroll();
+        }
+
+        str++;
+    }    
+}
+
 void clear_screen(void)
 {
     for (int i = 0; i < VGA_WIDTH * VGA_HEIGHT; i++)
@@ -75,10 +99,24 @@ void clear_screen(void)
     cursor = 0;
 }
 
+static inline void outw(uint16_t port, uint16_t value)
+{
+    __asm__ volatile ("outw %0, %1" : : "a"(value), "Nd"(port));
+}
+
+void poweroff(void)
+{
+    outw(0x604, 0x2000);
+
+    for (;;)
+        __asm__ volatile ("cli; hlt");
+}
+
 void kernel_main(void)
 {
     print("WEE64 " WEE64_VERSION "\n");
-    print("welcome to wee64!\n");
+    print("welcome to ");
+    print_color("wee64!\n", 0x0A);
 
     idt_init();
 
