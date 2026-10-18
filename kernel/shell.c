@@ -22,6 +22,8 @@ typedef struct
 
 static void cmd_help(int argc, char **argv);
 
+// kikeli homo 
+
 static void cmd_about(int argc, char **argv)
 {
     (void)argc;
