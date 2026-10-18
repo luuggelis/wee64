@@ -92,6 +92,28 @@ void print_color(const char* str, unsigned char color)
     }    
 }
 
+void print_color_n(const char *str, unsigned long len, unsigned char color)
+{
+    for (unsigned long i = 0; i < len; i++)
+    {
+        if (str[i] == '\n')
+        {
+            cursor = (cursor / VGA_WIDTH + 1) * VGA_WIDTH;
+        }
+        else
+        {
+            video[cursor * 2] = str[i];
+            video[cursor * 2 + 1] = color;
+            cursor++;
+        }
+
+        if (cursor >= VGA_WIDTH * VGA_HEIGHT)
+        {
+            scroll();
+        }
+    }
+}
+
 void clear_screen(void)
 {
     for (int i = 0; i < VGA_WIDTH * VGA_HEIGHT; i++)

@@ -1,9 +1,13 @@
 extern void print(const char *str);
 extern void print_color(const char *str, unsigned char color);
+extern void print_color_n(const char *str, unsigned long len, unsigned char color);
 extern int strcmp(const char *a, const char *b);
 extern void clear_screen(void);
 extern void diagnostics(void);
 extern void poweroff(void);
+
+extern const char _binary_assets_art_txt_start[];
+extern const char _binary_assets_art_txt_end[]; 
 
 #define HOSTNAME "root"
 
@@ -23,21 +27,17 @@ static void cmd_about(int argc, char **argv)
     (void)argc;
     (void)argv;
 
-    print_color(
-        "\n"
-        " $$   $$  $$$$$$  $$$$$$    $$    $$  $$ \n"
-        " $$   $$  $$      $$       $$     $$  $$ \n"
-        " $$ $ $$  $$$$    $$$$    $$$$$   $$$$$$ \n"
-        " $$$$$$$  $$      $$      $$  $$      $$ \n"
-        "  $$ $$   $$$$$$  $$$$$$   $$$$       $$ \n",
-        0x0A
-    );
+    print_color_n(_binary_assets_art_txt_start, 
+        _binary_assets_art_txt_end - _binary_assets_art_txt_start, 0x0A);
+    
+    print("\n");
 
-    print_color("-----------------------------------------\n", 0x08);
-    print_color("a lightweight open-source OS\n", 0x07);
+    print_color("--------------------------------------------\n", 0x08);
+    print_color("a lightweight open-source OS\n", 0x01);
     print_color("arch: x86_64\n", 0x0B);
     print_color("license: MIT\n", 0x0E);
     print_color("source: https://github.com/luuggelis/wee64\n", 0x07);
+    print_color("\na bit wee, ain't it?\n", 0x08);
 }
 
 static void cmd_echo(int argc, char **argv)

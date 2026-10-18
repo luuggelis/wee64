@@ -1,6 +1,7 @@
 AS = nasm
 CC = gcc
 LD = ld
+OBJCOPY = objcopy
 
 VERSION = 0.2.3
 ISO     = wee64-$(VERSION).iso
@@ -17,9 +18,12 @@ LDFLAGS = -m elf_x86_64 -T linker.ld
 C_SRCS   = kernel/kernel.c kernel/interrupts.c kernel/shell.c kernel/string.c kernel/diagnostics.c kernel/exceptions.c \
 		   kernel/ata.c fs/fat32.c
 
+ART_TXT = assets/art.txt
+ART_OBJ = $(BUILD)/art.o
+
 C_OBJS = $(patsubst %.c,$(BUILD)/%.o,$(C_SRCS))
 ASM_OBJS = $(BUILD)/boot.o $(BUILD)/interrupts_asm.o $(BUILD)/exceptions_asm.o
-OBJS     = $(ASM_OBJS) $(C_OBJS)
+OBJS     = $(ASM_OBJS) $(C_OBJS) $(ART_OBJ)
 
 .PHONY: all clean run
 
@@ -36,6 +40,9 @@ $(BUILD)/interrupts_asm.o: kernel/interrupts.asm | $(BUILD)
 
 $(BUILD)/exceptions_asm.o: kernel/exceptions.asm | $(BUILD)
 	$(AS) -f elf64 $< -o $@
+
+$(ART_OBJ): $(ART_TXT) | $(BUILD)
+	$(OBJCOPY) -I binary -O elf64-x86-64 -B i386:x86-64 $< $@
 
 $(BUILD)/%.o: %.c
 	mkdir -p $(dir $@)
