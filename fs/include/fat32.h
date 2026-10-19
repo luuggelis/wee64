@@ -30,7 +30,6 @@ int fat32_read_cluster(
     size_t buffer_size
 );
 
-
 int fat32_read_file(
     fat32_fs_t *fs,
     uint32_t first_cluster,
@@ -39,7 +38,15 @@ int fat32_read_file(
     size_t buffer_size
 );
 
+int fat32_find_directory(
+    fat32_fs_t *fs,
+    uint32_t parent_cluster,
+    const char *name,
+    uint32_t *result_cluster
+);
 
 int fat32_list_root(fat32_fs_t *fs);
+
+int fat32_list_directory(fat32_fs_t *fs, uint32_t cluster);
 
 #endif

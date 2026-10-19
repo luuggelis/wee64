@@ -1,5 +1,9 @@
 #include "../fs/include/fat32.h"
+#include <string.h>
+#include <stddef.h>
 #include <stdint.h>
+
+#define PATH_MAX 256
 
 extern void print(const char *str);
 extern void print_color(const char *str, unsigned char color);
@@ -12,7 +16,11 @@ extern void poweroff(void);
 extern const char _binary_assets_art_txt_start[];
 extern const char _binary_assets_art_txt_end[]; 
 
+extern char current_path[PATH_MAX];
+
 extern fat32_fs_t filesystem;
+
+extern uint32_t current_dir_cluster;
 
 #define HOSTNAME "root"
 
@@ -24,6 +32,16 @@ typedef struct
     const char *help;
     cmd_fn fn;
 } command_t;
+
+static size_t shell_strlen(const char *s)
+{
+    size_t len = 0;
+
+    while (s[len] != '\0')
+        len++;
+
+    return len;
+}
 
 static void cmd_help(int argc, char **argv);
 
@@ -108,7 +126,7 @@ static void cmd_ls(int argc, char **argv)
 
 
     print("-------------\n");
-    fat32_list_root(&filesystem);
+    fat32_list_directory(&filesystem, current_dir_cluster);
     print("-------------\n");
 }
 
@@ -116,7 +134,7 @@ static void cmd_cat(int argc, char **argv)
 {
     if (argc < 2)
     {
-        print("usage: cat <filename>");
+        print("usage: cat <filename>\n");
         return;
     }
 
@@ -130,8 +148,7 @@ static void cmd_cat(int argc, char **argv)
             dir_buffer,
             sizeof(dir_buffer)) != 0)
     {
-        print_color("[ cat ] ", 0x0C);
-        print("failed to read directory\n");
+        print("cat: failed to read directory\n");
         return;
     }
 
@@ -185,8 +202,7 @@ static void cmd_cat(int argc, char **argv)
 
         if (file_size > 4096)
         {
-            print_color("[ cat ] ", 0x0C);
-            print("file too large (max 4096 bytes)\n");
+            print("cat: file too large (max 4096 bytes)\n");
             return;
         }
 
@@ -203,8 +219,7 @@ static void cmd_cat(int argc, char **argv)
                 buffer,
                 sizeof(buffer) - 1) != 0)
         {
-            print_color("[ cat ] ", 0x0C);
-            print("failed to read file\n");
+            print("cat: failed to read file\n");
             return;
         }
 
@@ -214,8 +229,94 @@ static void cmd_cat(int argc, char **argv)
         return;
     }
 
-    print_color("[ cat ] ", 0x0C);
-    print("file not found\n");
+    print("cat: file not found\n");
+}
+
+static void cmd_cd(int argc, char **argv)
+{
+    if (argc != 2)
+    {
+        print("usage: cd <directory>\n");
+        return;
+    }
+
+if (strcmp(argv[1], ".") == 0)
+        return;
+
+    // Jump to the root directory.
+    if (strcmp(argv[1], "/") == 0)
+    {
+        current_dir_cluster = filesystem.root_cluster;
+        current_path[0] = '/';
+        current_path[1] = '\0';
+        return;
+    }
+
+    if (strcmp(argv[1], "..") == 0)
+    {
+        if (current_dir_cluster == filesystem.root_cluster)
+        {
+            current_path[0] = '/';
+            current_path[1] = '\0';
+            return;
+        }
+
+        uint32_t parent_cluster;
+
+        if (fat32_find_directory(
+                &filesystem,
+                current_dir_cluster,
+                "..",
+                &parent_cluster) != 0)
+        {
+            print("cd: parent directory not found\n");
+            return;
+        }
+
+        // Remove the last path component.
+        size_t len = shell_strlen(current_path);
+
+        while (len > 1 && current_path[len - 1] != '/')
+            len--;
+
+        if (len > 1)
+            current_path[len - 1] = '\0';
+        else
+            current_path[1] = '\0';
+
+        current_dir_cluster = parent_cluster;
+        return;
+    }
+
+    uint32_t new_cluster;
+
+    if (fat32_find_directory(
+        &filesystem, 
+        current_dir_cluster, 
+        argv[1],
+        &new_cluster) != 0)
+    {
+        print("cd: directory not found\n");
+        return;
+    } 
+
+    size_t path_len = shell_strlen(current_path);
+    size_t name_len = shell_strlen(argv[1]);
+
+    if (path_len + name_len + 1 >= 256)
+    {
+        print("cd: path too long\n");
+        return;
+    }
+
+    if (path_len > 1)
+        current_path[path_len++] = '/';
+
+    for (size_t i = 0; i < name_len; i++)
+        current_path[path_len++] = argv[1][i];
+
+    current_path[path_len] = '\0';
+    current_dir_cluster = new_cluster;
 }
 
 static const command_t commands[] =
@@ -230,6 +331,7 @@ static const command_t commands[] =
     { "exit",     "shuts off wee64",         cmd_exit     },
     { "ls",       "lists files in dir",      cmd_ls       },
     { "cat",      "prints file contents",    cmd_cat      },
+    { "cd",       "changes directories",     cmd_cd       },
 };
 
 #define NUM_COMMANDS (sizeof(commands) / sizeof(commands[0]))

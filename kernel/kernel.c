@@ -5,11 +5,17 @@
 #define VGA_WIDTH 80
 #define VGA_HEIGHT 25
 
+#define PATH_MAX 256
+
 extern void idt_init(void);
 extern int strcmp(const char *a, const char *b);
 extern void shell_execute(char *line);
 
 fat32_fs_t filesystem;
+
+char current_path[PATH_MAX] = "/";
+
+uint32_t current_dir_cluster;
 
 extern volatile int line_ready;
 extern char line_buff[];
@@ -166,10 +172,18 @@ static void test_fs(void)
     print("fs initialized\n");
 }
 
+static void print_prompt()
+{
+    print_color(current_path, 0x01);
+    print_color(" @ wsh> ", 0x02);
+}
+
 void kernel_main(void)
 {
     test_disk();
     test_fs();
+
+    current_dir_cluster = filesystem.root_cluster;
 
     print("\n");
 
@@ -179,7 +193,8 @@ void kernel_main(void)
 
     idt_init();
 
-    print("\nwsh> ");
+    print("\n");
+    print_prompt();
 
     __asm__ volatile ("sti");
 
@@ -192,7 +207,7 @@ void kernel_main(void)
             shell_execute(line_buff);
 
             line_ready = 0;
-            print("wsh> ");
+            print_prompt();
         }
     }
 }

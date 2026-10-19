@@ -200,6 +200,205 @@ static int fat32_next_cluster(
     return 0;
 }
 
+
+int fat32_list_directory(fat32_fs_t *fs, uint32_t start_cluster)
+{
+    if (fs == NULL || start_cluster < 2)
+        return -1;
+
+    if (fs->bytes_per_sector != FAT32_SECTOR_SIZE ||
+        fs->sectors_per_cluster == 0)
+        return -1;
+
+    uint32_t cluster = start_cluster;
+    size_t cluster_size =
+        (size_t)fs->bytes_per_sector * fs->sectors_per_cluster;
+
+    uint8_t buffer[4096];
+
+    uint32_t cluster_limit =
+        (fs->sectors_per_fat * fs->bytes_per_sector) / 4;
+
+    for (uint32_t count = 0; count < cluster_limit; count++)
+    {
+        if (cluster_size > sizeof(buffer))
+            return -1;
+
+        if (fat32_read_cluster(fs, cluster, buffer,
+                               sizeof(buffer)) != 0)
+            return -1;
+
+        for (size_t offset = 0; offset + 32 <= cluster_size;
+             offset += 32)
+        {
+            uint8_t *entry = &buffer[offset];
+
+            if (entry[0] == 0x00)
+                return 0;
+
+            if (entry[0] == 0xE5 || entry[11] == 0x0F)
+                continue;
+
+            if (entry[11] & 0x08)
+                continue;
+
+            if (entry[11] & 0x10)
+                print("[DIR] ");
+
+            for (int i = 0; i < 11; i++)
+            {
+                if (i == 8)
+                    print(".");
+
+                char c = (char)entry[i];
+
+                if (c == ' ')
+                    continue;
+
+                char str[2] = { c, '\0' };
+                print(str);
+            }
+
+            print("\n");
+        }
+
+        uint32_t next;
+        int rc = fat32_next_cluster(fs, cluster, &next);
+
+        if (rc == 1)
+            return 0;
+
+        if (rc != 0)
+            return -1;
+
+        cluster = next;
+    }
+
+    return -1;
+}
+
+
+int fat32_find_directory(
+    fat32_fs_t *fs,
+    uint32_t parent_cluster,
+    const char *name,
+    uint32_t *result_cluster)
+{
+    if (fs == NULL || name == NULL || result_cluster == NULL ||
+        parent_cluster < 2)
+        return -1;
+
+    if (fs->bytes_per_sector != FAT32_SECTOR_SIZE ||
+        fs->sectors_per_cluster == 0)
+        return -1;
+
+    size_t cluster_size =
+        (size_t)fs->bytes_per_sector * fs->sectors_per_cluster;
+
+    uint8_t buffer[4096];
+
+    if (cluster_size > sizeof(buffer))
+        return -1;
+
+    uint32_t cluster = parent_cluster;
+    uint32_t cluster_limit =
+        (fs->sectors_per_fat * fs->bytes_per_sector) / 4;
+
+    for (uint32_t count = 0; count < cluster_limit; count++)
+    {
+        if (fat32_read_cluster(fs, cluster, buffer,
+                               sizeof(buffer)) != 0)
+            return -1;
+
+        for (size_t offset = 0; offset + 32 <= cluster_size;
+             offset += 32)
+        {
+            uint8_t *entry = &buffer[offset];
+
+            if (entry[0] == 0x00)
+                return -1;
+
+            if (entry[0] == 0xE5 || entry[11] == 0x0F)
+                continue;
+
+            if (!(entry[11] & 0x10) || (entry[11] & 0x08))
+                continue;
+
+            char short_name[13];
+            size_t pos = 0;
+
+            for (int i = 0; i < 8; i++)
+            {
+                if (entry[i] == ' ')
+                    break;
+
+                short_name[pos++] = entry[i];
+            }
+
+            int has_extension = entry[8] != ' ';
+
+            if (has_extension)
+            {
+                short_name[pos++] = '.';
+
+                for (int i = 8; i < 11; i++)
+                {
+                    if (entry[i] == ' ')
+                        break;
+
+                    short_name[pos++] = entry[i];
+                }
+            }
+
+            short_name[pos] = '\0';
+
+            size_t i = 0;
+
+            while (short_name[i] && name[i])
+            {
+                char a = short_name[i];
+                char b = name[i];
+
+                if (a >= 'a' && a <= 'z') a -= 32;
+                if (b >= 'a' && b <= 'z') b -= 32;
+
+                if (a != b)
+                    break;
+
+                i++;
+            }
+
+            if (short_name[i] == '\0' && name[i] == '\0')
+            {
+                uint32_t found =
+                    ((uint32_t)read16(&entry[20]) << 16) |
+                    read16(&entry[26]);
+
+                if (found < 2)
+                    return -1;
+
+                *result_cluster = found;
+                return 0;
+            }
+        }
+
+        uint32_t next;
+        int rc = fat32_next_cluster(fs, cluster, &next);
+
+        if (rc == 1)
+            break;
+
+        if (rc != 0)
+            return -1;
+
+        cluster = next;
+    }
+
+    return -1;
+}
+
+
+
 int fat32_read_file(
     fat32_fs_t *fs,
     uint32_t first_cluster,
