@@ -8,11 +8,11 @@
 
 VERY early in development, don't use (yet).
 
-on version 0.2.3
+on version 0.3.0
 
 ## requirements
 
-- some sort of ISO emulator (e.g. qemu)
+- either VirtualBox or QEMU
 - gcc (C compiler)
 - nasm (assembly compiler)
 - grub
@@ -21,19 +21,19 @@ on version 0.2.3
 - mtools
 - make
 
-ubuntu/debian-based linux distro is recommended, but wsl on windows works fine too
+a Linux system is recommended, but wsl on windows works fine too.
 
 ## building & running
 
 ```bash
 git clone https://github.com/luuggelis/wee64.git
 cd wee64
-make
-make run
+./run.sh
 ```
 
 ## structure
 
 - `boot/` — bootloader and GRUB config
 - `kernel/` — kernel source (C + assembly)
+- `fs/` — filesystem code (mostly C)
 - `linker.ld` — linker script
