@@ -151,6 +151,10 @@ static void test_disk(void)
 
     print_color("[ disk ] ", 0x02);
     print("sector 0 read OK\n");
+
+    print("-------------\n");
+    fat32_list_root(&filesystem);
+    print("-------------\n");
 }
 
 static void test_fs(void)
