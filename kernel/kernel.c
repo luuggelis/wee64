@@ -144,12 +144,12 @@ static void test_disk(void)
 
     if (ata_read28(0, 0, sector) != 0)
     {
-        print_color("[disk] ", 0x0C);
+        print_color("[ disk ] ", 0x0C);
         print("read failed\n");
         return;
     }
 
-    print_color("[disk] ", 0x0A);
+    print_color("[ disk ] ", 0x02);
     print("sector 0 read OK\n");
 }
 
@@ -157,12 +157,12 @@ static void test_fs(void)
 {
     if (fat32_init(&filesystem, 0) != 0)
     {
-        print_color("[fat32] ", 0x0C);
+        print_color("[ fat32 ] ", 0x0C);
         print("initialization failed\n");
         return;
     }
 
-    print_color("[fat32] ", 0x0A);
+    print_color("[ fat32 ] ", 0x02);
     print("fs initialized\n");
 }
 
