@@ -24,10 +24,10 @@ int fat32_init(fat32_fs_t *fs, uint8_t drive)
 {
     uint8_t sector[FAT32_SECTOR_SIZE];
 
-    fs->drive = drive;
-
     if (fs == NULL)
         return -1;
+    
+    fs->drive = drive;
 
     if (ata_read28(fs->drive, 0, sector) != 0)
         return -1;
@@ -109,8 +109,19 @@ int fat32_list_root(fat32_fs_t *fs)
 {
     uint8_t buffer[4096];
 
-    if (fat32_read_cluster(fs, fs->root_cluster, buffer, sizeof(buffer)) != 0)
+    print("[ fat32 ] reading root directory...\n");
+
+    if (fat32_read_cluster(
+            fs,
+            fs->root_cluster,
+            buffer,
+            sizeof(buffer)) != 0)
+    {
+        print("[ fat32 ] failed to read root directory\n");
         return -1;
+    }
+
+    print("[ fat32 ] root directory read OK\n");
 
     for (uint32_t offset = 0;
          offset < fs->bytes_per_sector * fs->sectors_per_cluster;

@@ -9,7 +9,7 @@ extern void idt_init(void);
 extern int strcmp(const char *a, const char *b);
 extern void shell_execute(char *line);
 
-static fat32_fs_t filesystem;
+fat32_fs_t filesystem;
 
 extern volatile int line_ready;
 extern char line_buff[];
@@ -151,10 +151,6 @@ static void test_disk(void)
 
     print_color("[ disk ] ", 0x02);
     print("sector 0 read OK\n");
-
-    print("-------------\n");
-    fat32_list_root(&filesystem);
-    print("-------------\n");
 }
 
 static void test_fs(void)

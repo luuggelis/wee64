@@ -1,3 +1,5 @@
+#include "../fs/include/fat32.h"
+
 extern void print(const char *str);
 extern void print_color(const char *str, unsigned char color);
 extern void print_color_n(const char *str, unsigned long len, unsigned char color);
@@ -8,6 +10,8 @@ extern void poweroff(void);
 
 extern const char _binary_assets_art_txt_start[];
 extern const char _binary_assets_art_txt_end[]; 
+
+extern fat32_fs_t filesystem;
 
 #define HOSTNAME "root"
 
@@ -98,6 +102,17 @@ static void cmd_exit(int argc, char **argv)
     poweroff();
 }
 
+static void cmd_ls(int argc, char **argv)
+{
+    (void)argc;
+    (void)argv;
+
+
+    print("-------------\n");
+    fat32_list_root(&filesystem);
+    print("-------------\n");
+}
+
 static const command_t commands[] =
 {
     { "help",     "list all commands",       cmd_help     },
@@ -108,6 +123,7 @@ static const command_t commands[] =
     { "clear",    "clears terminal",         cmd_clear    },
     { "dia",      "show system diagnostics", cmd_dia      },
     { "exit",     "shuts off wee64",         cmd_exit     },
+    { "ls",       "lists files in dir",      cmd_ls       },
 };
 
 #define NUM_COMMANDS (sizeof(commands) / sizeof(commands[0]))
