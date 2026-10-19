@@ -1,3 +1,5 @@
+<img width="182" height="100" alt="ascii-art-text" src="https://github.com/user-attachments/assets/306176a5-ec26-4881-814d-6e635c0b3fc8" />
+
 # wee64
 
 ### a small, lightweight operating system/kernel written in C/Assembly
