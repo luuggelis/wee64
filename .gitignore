@@ -8,6 +8,7 @@ build/
 *.o
 *.bin
 *.iso
+*.img
 
 # other files/folders
 
