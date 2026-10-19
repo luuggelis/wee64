@@ -140,6 +140,12 @@ int fat32_list_root(fat32_fs_t *fs)
 
         if (entry[11] & 0x08)
             continue;
+        
+        uint32_t first_cluster =
+            ((uint32_t)read16(&entry[20]) << 16) |
+            read16(&entry[26]);
+
+        uint32_t file_size = read32(&entry[28]);
 
         if (entry[11] & 0x10)
             print("[DIR] ");
@@ -165,9 +171,10 @@ int fat32_list_root(fat32_fs_t *fs)
 }
 
 
-static int fat32_next_cluster(fat32_fs_t *fs,
-                              uint32_t cluster,
-                              uint32_t *next)
+static int fat32_next_cluster(
+           fat32_fs_t *fs,
+           uint32_t cluster,
+           uint32_t *next)
 {
     if (fs == NULL || next == NULL || cluster < 2)
         return -1;
@@ -193,11 +200,12 @@ static int fat32_next_cluster(fat32_fs_t *fs,
     return 0;
 }
 
-int fat32_read_file(fat32_fs_t *fs,
-                    uint32_t first_cluster,
-                    uint32_t file_size,
-                    void *buffer,
-                    size_t buffer_size)
+int fat32_read_file(
+    fat32_fs_t *fs,
+    uint32_t first_cluster,
+    uint32_t file_size,
+    void *buffer,
+    size_t buffer_size)
 {
     if (fs == NULL || buffer == NULL || first_cluster < 2)
         return -1;

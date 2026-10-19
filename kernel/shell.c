@@ -1,4 +1,5 @@
 #include "../fs/include/fat32.h"
+#include <stdint.h>
 
 extern void print(const char *str);
 extern void print_color(const char *str, unsigned char color);
@@ -25,8 +26,6 @@ typedef struct
 } command_t;
 
 static void cmd_help(int argc, char **argv);
-
-// kikeli homo 
 
 static void cmd_about(int argc, char **argv)
 {
@@ -113,6 +112,112 @@ static void cmd_ls(int argc, char **argv)
     print("-------------\n");
 }
 
+static void cmd_cat(int argc, char **argv)
+{
+    if (argc < 2)
+    {
+        print("usage: cat <filename>");
+        return;
+    }
+
+    uint8_t buffer[4097];
+
+    uint8_t dir_buffer[4096];
+
+    if (fat32_read_cluster(
+            &filesystem,
+            filesystem.root_cluster,
+            dir_buffer,
+            sizeof(dir_buffer)) != 0)
+    {
+        print_color("[ cat ] ", 0x0C);
+        print("failed to read directory\n");
+        return;
+    }
+
+    for (unsigned offset = 0;
+        offset < filesystem.bytes_per_sector *
+                 filesystem.sectors_per_cluster;
+        offset += 32)  
+    {
+        uint8_t *entry = &dir_buffer[offset];
+
+        if (entry[0] == 0x00)
+            break;
+
+        if (entry[0] == 0xE5 ||
+            entry[11] == 0x0F ||
+            (entry[11] & 0x18))
+            continue;
+
+        char name[13];
+        unsigned n = 0;
+
+        for (unsigned i = 0; i < 8 && entry[i] != ' '; i++)
+            name[n++] = (char)entry[i];
+
+        if (entry[8] != ' ')
+        {
+            name[n++] = '.';
+
+            for (unsigned i = 8; i < 11 && entry[i] != ' '; i++)
+                name[n++] = (char)entry[i];
+        }
+
+        name[n] = '\0';
+
+        if (strcmp(argv[1], name) != 0)
+            continue;
+
+        uint32_t first_cluster =
+            ((uint32_t)dir_buffer[offset + 20] |
+             ((uint32_t)dir_buffer[offset + 21] << 8)) << 16;
+
+        first_cluster |=
+            (uint32_t)dir_buffer[offset + 26] |
+            ((uint32_t)dir_buffer[offset + 27] << 8);
+
+        uint32_t file_size =
+            (uint32_t)dir_buffer[offset + 28] |
+            ((uint32_t)dir_buffer[offset + 29] << 8) |
+            ((uint32_t)dir_buffer[offset + 30] << 16) |
+            ((uint32_t)dir_buffer[offset + 31] << 24);
+
+        if (file_size > 4096)
+        {
+            print_color("[ cat ] ", 0x0C);
+            print("file too large (max 4096 bytes)\n");
+            return;
+        }
+
+        if (file_size == 0)
+        {
+            print("\n");
+            return;
+        }
+
+        if (fat32_read_file(
+                &filesystem,
+                first_cluster,
+                file_size,
+                buffer,
+                sizeof(buffer) - 1) != 0)
+        {
+            print_color("[ cat ] ", 0x0C);
+            print("failed to read file\n");
+            return;
+        }
+
+        buffer[file_size] = '\0';
+        print((const char *)buffer);
+        print("\n");
+        return;
+    }
+
+    print_color("[ cat ] ", 0x0C);
+    print("file not found\n");
+}
+
 static const command_t commands[] =
 {
     { "help",     "list all commands",       cmd_help     },
@@ -124,6 +229,7 @@ static const command_t commands[] =
     { "dia",      "show system diagnostics", cmd_dia      },
     { "exit",     "shuts off wee64",         cmd_exit     },
     { "ls",       "lists files in dir",      cmd_ls       },
+    { "cat",      "prints file contents",    cmd_cat      },
 };
 
 #define NUM_COMMANDS (sizeof(commands) / sizeof(commands[0]))

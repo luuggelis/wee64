@@ -30,6 +30,16 @@ int fat32_read_cluster(
     size_t buffer_size
 );
 
+
+int fat32_read_file(
+    fat32_fs_t *fs,
+    uint32_t first_cluster,
+    uint32_t file_size,
+    void *buffer,
+    size_t buffer_size
+);
+
+
 int fat32_list_root(fat32_fs_t *fs);
 
 #endif
