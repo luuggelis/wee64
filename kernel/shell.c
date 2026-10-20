@@ -263,6 +263,8 @@ static void cmd_cd(int argc, char **argv)
 
         uint32_t parent_cluster;
 
+        // aaaaaaaaaaaaaaaaaa
+
         if (fat32_find_directory(
                 &filesystem,
                 current_dir_cluster,
@@ -272,6 +274,7 @@ static void cmd_cd(int argc, char **argv)
             print("cd: parent directory not found\n");
             return;
         }
+
         size_t len = shell_strlen(current_path);
 
         while (len > 1 && current_path[len - 1] != '/')
