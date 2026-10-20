@@ -1,5 +1,4 @@
 #include "../fs/include/fat32.h"
-#include <string.h>
 #include <stddef.h>
 #include <stdint.h>
 
@@ -144,7 +143,7 @@ static void cmd_cat(int argc, char **argv)
 
     if (fat32_read_cluster(
             &filesystem,
-            filesystem.root_cluster,
+            current_dir_cluster,
             dir_buffer,
             sizeof(dir_buffer)) != 0)
     {
