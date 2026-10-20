@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include "include/ata.h"
 #include "../fs/include/fat32.h"
+#include "include/io.h"
 
 #define VGA_WIDTH 80
 #define VGA_HEIGHT 25
@@ -131,10 +132,6 @@ void clear_screen(void)
     cursor = 0;
 }
 
-static inline void outw(uint16_t port, uint16_t value)
-{
-    __asm__ volatile ("outw %0, %1" : : "a"(value), "Nd"(port));
-}
 
 void poweroff(void)
 {

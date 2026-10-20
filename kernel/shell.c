@@ -240,7 +240,7 @@ static void cmd_cd(int argc, char **argv)
         return;
     }
 
-if (strcmp(argv[1], ".") == 0)
+    if (strcmp(argv[1], ".") == 0)
         return;
 
     // Jump to the root directory.
@@ -273,7 +273,6 @@ if (strcmp(argv[1], ".") == 0)
             return;
         }
 
-        // Remove the last path component.
         size_t len = shell_strlen(current_path);
 
         while (len > 1 && current_path[len - 1] != '/')
@@ -287,6 +286,7 @@ if (strcmp(argv[1], ".") == 0)
         current_dir_cluster = parent_cluster;
         return;
     }
+
 
     uint32_t new_cluster;
 

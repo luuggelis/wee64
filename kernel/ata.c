@@ -21,6 +21,9 @@
 
 #define ATA_READ       0x20
 
+#define ATA_WRITE       0x30
+#define ATA_CACHE_FLUSH 0xE7
+
 #define ATA_TIMEOUT    1000000u
 
 static int ata_wait(int requrie_rqd)
@@ -90,3 +93,56 @@ int ata_read28(uint8_t drive, uint32_t lba, void *buffer)
 
     return 0;
 }
+
+
+int ata_write28(uint8_t drive, uint32_t lba, const void *buffer)
+{
+    if (drive > 1 || lba >= 0x10000000u || buffer == NULL)
+        return -1;
+
+    // Select the drive and the upper LBA bits.
+    outb(ATA_DRIVE,
+         (uint8_t)(0xE0 | (drive << 4) |
+                   ((lba >> 24) & 0x0F)));
+
+    ata_delay();
+
+    if (ata_wait(0) != 0)
+        return -1;
+
+    outb(ATA_SECCOUNT, 1);
+    outb(ATA_LBA0, (uint8_t)lba);
+    outb(ATA_LBA1, (uint8_t)(lba >> 8));
+    outb(ATA_LBA2, (uint8_t)(lba >> 16));
+
+    // start sector write
+
+    outb(ATA_COMMAND, ATA_WRITE);
+    ata_delay();
+
+    if (ata_wait(1) != 0)
+        return -1;
+
+    const uint8_t *bytes = (const uint8_t *)buffer;
+
+    for (int i = 0; i < 256; i++)
+    {
+        uint16_t word =
+            (uint16_t)bytes[i * 2] |
+            ((uint16_t)bytes[i * 2 + 1] << 8);
+
+        outw(ATA_DATA, word);
+    }
+
+    if (ata_wait(0) != 0)
+        return -1;
+
+    outb(ATA_COMMAND, ATA_CACHE_FLUSH);
+
+    if (ata_wait(0) != 0)
+        return -1;
+
+    return 0;
+}
+
+
