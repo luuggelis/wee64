@@ -272,7 +272,6 @@ static void cmd_cd(int argc, char **argv)
             print("cd: parent directory not found\n");
             return;
         }
-
         size_t len = shell_strlen(current_path);
 
         while (len > 1 && current_path[len - 1] != '/')
@@ -286,7 +285,6 @@ static void cmd_cd(int argc, char **argv)
         current_dir_cluster = parent_cluster;
         return;
     }
-
 
     uint32_t new_cluster;
 
