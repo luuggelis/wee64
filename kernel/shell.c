@@ -242,7 +242,6 @@ static void cmd_cd(int argc, char **argv)
     if (strcmp(argv[1], ".") == 0)
         return;
 
-    // Jump to the root directory.
     if (strcmp(argv[1], "/") == 0)
     {
         current_dir_cluster = filesystem.root_cluster;
@@ -262,7 +261,7 @@ static void cmd_cd(int argc, char **argv)
 
         uint32_t parent_cluster;
 
-        // aaaaaaaaaaaaaaaaaa
+        // ffwef
 
         if (fat32_find_directory(
                 &filesystem,
@@ -319,6 +318,15 @@ static void cmd_cd(int argc, char **argv)
     current_dir_cluster = new_cluster;
 }
 
+static void cmd_pwd(int argc, char **argv)
+{
+    (void)argc;
+    (void)argv;
+
+    print(current_path);
+    print("\n");
+}
+
 static const command_t commands[] =
 {
     { "help",     "list all commands",       cmd_help     },
@@ -332,6 +340,7 @@ static const command_t commands[] =
     { "ls",       "lists files in dir",      cmd_ls       },
     { "cat",      "prints file contents",    cmd_cat      },
     { "cd",       "changes directories",     cmd_cd       },
+    { "pwd",      "shows current dir",       cmd_pwd      },
 };
 
 #define NUM_COMMANDS (sizeof(commands) / sizeof(commands[0]))

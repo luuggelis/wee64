@@ -3,7 +3,7 @@ CC = gcc
 LD = ld
 OBJCOPY = objcopy
 
-VERSION = 0.3.0
+VERSION = 0.3.1
 ISO     = wee64-$(VERSION).iso
 BUILD   = build
 
